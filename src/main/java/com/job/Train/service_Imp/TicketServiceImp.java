@@ -202,7 +202,7 @@ public class TicketServiceImp implements TicketService {
     }
 
     public TicketDto fareCalculation(List<StationDto> stationDtoList, TicketDto ticketDto) {
-        double farePerKm= trainService.fetchById(ticketDto.getTrainDto().getTrainNumber()).getFarePerKm();
+        double farePerKm = trainService.fetchById(ticketDto.getTrainDto().getTrainNumber()).getFarePerKm();
         double updatetotalSleeperSeatFare, updatedGeneralSeat, updateAcSeat;
         for (StationDto stationDto : stationDtoList) {
             switch (ticketDto.getSeatType().toUpperCase()) {
