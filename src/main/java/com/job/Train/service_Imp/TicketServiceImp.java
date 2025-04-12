@@ -9,6 +9,7 @@ import com.job.Train.repository.TicketRepository;
 import com.job.Train.repository.TrainRepository;
 import com.job.Train.sevice.StationService;
 import com.job.Train.sevice.TicketService;
+import com.job.Train.sevice.TrainService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class TicketServiceImp implements TicketService {
 
     @Autowired
     TicketRepository ticketRepository;
+
+    @Autowired
+    TrainService trainService;
 
     @Autowired
     TrainRepository trainRepository;
@@ -198,44 +202,45 @@ public class TicketServiceImp implements TicketService {
     }
 
     public TicketDto fareCalculation(List<StationDto> stationDtoList, TicketDto ticketDto) {
+        double farePerKm= trainService.fetchById(ticketDto.getTrainDto().getTrainNumber()).getFarePerKm();
         double updatetotalSleeperSeatFare, updatedGeneralSeat, updateAcSeat;
         for (StationDto stationDto : stationDtoList) {
             switch (ticketDto.getSeatType().toUpperCase()) {
                 case "SLEEPERSEAT": {
                     if (ticketDto.getAge() > 12 && ticketDto.getAge() < 60) {
-                        updatetotalSleeperSeatFare = (ticketDto.getTrainDto().getFarePerKm() * 1.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updatetotalSleeperSeatFare = (farePerKm * 1.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updatetotalSleeperSeatFare);
                     } else if (ticketDto.getAge() <= 12) {
-                        updatetotalSleeperSeatFare = (ticketDto.getTrainDto().getFarePerKm() * 0.3 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updatetotalSleeperSeatFare = (farePerKm * 0.3 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updatetotalSleeperSeatFare);
                     } else {
-                        updatetotalSleeperSeatFare = (ticketDto.getTrainDto().getFarePerKm() * 1.2 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updatetotalSleeperSeatFare = (farePerKm * 1.2 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updatetotalSleeperSeatFare);
                     }
                     break;
                 }
                 case "ACSEAT": {
                     if (ticketDto.getAge() > 12 && ticketDto.getAge() < 60) {
-                        updateAcSeat = (ticketDto.getTrainDto().getFarePerKm() * 2 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updateAcSeat = (farePerKm * 2 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updateAcSeat);
                     } else if (ticketDto.getAge() <= 12) {
-                        updateAcSeat = (ticketDto.getTrainDto().getFarePerKm() * 0.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updateAcSeat = (farePerKm * 0.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updateAcSeat);
                     } else {
-                        updateAcSeat = (ticketDto.getTrainDto().getFarePerKm() * 1.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updateAcSeat = (farePerKm * 1.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updateAcSeat);
                     }
                     break;
                 }
                 default: {
                     if (ticketDto.getAge() > 12 && ticketDto.getAge() < 60) {
-                        updatedGeneralSeat = (ticketDto.getTrainDto().getFarePerKm() * 1.2 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updatedGeneralSeat = (farePerKm * 1.2 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updatedGeneralSeat);
                     } else if (ticketDto.getAge() <= 12) {
-                        updatedGeneralSeat = (ticketDto.getTrainDto().getFarePerKm() * 0.3 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updatedGeneralSeat = (farePerKm * 0.3 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updatedGeneralSeat);
                     } else {
-                        updatedGeneralSeat = (ticketDto.getTrainDto().getFarePerKm() * 0.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
+                        updatedGeneralSeat = (farePerKm * 0.5 * stationDto.getKiloMeter()) + ticketDto.getTotalFare();
                         ticketDto.setTotalFare(updatedGeneralSeat);
                     }
                     break;

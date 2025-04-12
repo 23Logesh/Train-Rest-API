@@ -85,7 +85,7 @@ public class StationServiceImp implements StationService {
     }
 
     public StationDto findSeatAndDistanceBetweenTheStation(String source, String destination) {
-
+            return new StationDto();
     }
 
     public StationDto convertEntityToDto(Station station) {
