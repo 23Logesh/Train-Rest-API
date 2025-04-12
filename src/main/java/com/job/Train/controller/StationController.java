@@ -27,7 +27,7 @@ public class StationController {
     }
 
     @GetMapping("/findSeatAndDistance/{source}/{destination}")
-    public StationDto findSeatAndDistanceBetweenTheStation(String source, String destination) {
+    public ResponseEntity<StationDto> findSeatAndDistanceBetweenTheStation(String source, String destination) {
         return new ResponseEntity<StationDto>(stationService.findSeatAndDistanceBetweenTheStation(source, destination), HttpStatus.OK);
     }
 }
