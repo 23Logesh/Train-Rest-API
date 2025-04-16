@@ -196,6 +196,48 @@ public class TicketServiceImp implements TicketService {
         }
     }
 
+    @Override
+    public String findSeatAndDistanceBetweenTheStation(int trainNumber, String source, String destination) {
+        int distance = 0;
+        int sleeperSeat = 0;
+        int acSeat = 0;
+        int generalSeat = 0;
+        TrainDto trainDto = trainService.fetchById(trainNumber);
+        if (trainDto != null) {
+            List<StationDto> stationList = stationService.fetchByTrain(trainDto.getTrainNumber());
+            StationDto sourceStation = null, destinationStation = null;
+            boolean inRoute = false;
+            List<StationDto> routeStations = new ArrayList<>();
+
+            for (StationDto station : stationList) {
+                if (station.getStationName().equalsIgnoreCase(source) && !source.equals(station.getTrainDto().getCurrentStation())) {
+                    inRoute = true;
+                    sourceStation = station;
+                }
+                if (inRoute) {
+                    routeStations.add(station);
+                }
+                if (station.getStationName().equalsIgnoreCase(destination)) {
+                    destinationStation = station;
+                    break;
+                }
+            }
+            if (sourceStation == null || destinationStation == null) {
+                return "Route Not Found";
+            }
+
+            distance = routeStations.stream().map(StationDto::getKiloMeter).reduce(0, (a, b) -> a + b);
+
+            routeStations.removeLast();
+            sleeperSeat = routeStations.stream().map(StationDto::getSleeperSeat).min(Integer::compareTo).orElse(0);
+            acSeat = routeStations.stream().map(StationDto::getAcSeat).min(Integer::compareTo).orElse(0);
+            generalSeat = routeStations.stream().map(StationDto::getGeneralSeat).min(Integer::compareTo).orElse(0);
+
+
+            return "Distance: " + distance + ", Seat Availability: " + " # Sleeper: " + sleeperSeat + " # Ac: " + acSeat + " # General: " + generalSeat;
+        } else return "Train Not Found";
+    }
+
     public TicketDto findById(int ticketId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
         return ticket.map(this::convertEntityToDto).orElse(null);

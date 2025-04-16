@@ -14,5 +14,4 @@ public interface StationService {
 
     StationDto updateStation(int stationNumber, StationDto stationDto);
 
-    StationDto findSeatAndDistanceBetweenTheStation(String source, String destination);
 }

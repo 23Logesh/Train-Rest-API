@@ -1,5 +1,6 @@
 package com.job.Train.controller;
 
+import com.job.Train.dto.StationDto;
 import com.job.Train.dto.TicketDto;
 import com.job.Train.sevice.TicketService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,4 +26,11 @@ public class TicketController {
     public String cancelTicket(@PathVariable int ticketId) {
         return ticketService.cancelTicket(ticketId);
     }
+
+
+    @GetMapping("/findSeatAndDistance/{trainNumber}/{source}/{destination}")
+    public ResponseEntity<String> findSeatAndDistanceBetweenTheStation(int trainNumber, String source, String destination) {
+        return new ResponseEntity<String>(ticketService.findSeatAndDistanceBetweenTheStation( trainNumber,source, destination), HttpStatus.OK);
+    }
+
 }
